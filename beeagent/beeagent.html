@@ -1,505 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BeeAgent – Beekeeping Dashboard</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: Georgia, serif;
-    background: #fdf8f0;
-    color: #2c1a0e;
-    min-height: 100vh;
-  }
-
-  header {
-    background: #92400e;
-    color: white;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  header h1 { font-size: 22px; font-weight: normal; letter-spacing: 0.02em; }
-  header p  { font-size: 13px; opacity: 0.8; margin-top: 3px; }
-
-  .location-bar {
-    background: #fff7ed;
-    border-bottom: 1px solid #e5c99a;
-    padding: 10px 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .location-bar label { font-size: 13px; color: #78350f; }
-  .location-bar input {
-    flex: 1;
-    min-width: 200px;
-    padding: 7px 12px;
-    border: 1px solid #e5c99a;
-    border-radius: 6px;
-    background: white;
-    font-size: 13px;
-    font-family: Georgia, serif;
-  }
-  .location-bar button {
-    padding: 7px 18px;
-    background: #92400e;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    font-family: Georgia, serif;
-  }
-  .location-bar button:hover { background: #7c3410; }
-  #loc-status { font-size: 12px; color: #78350f; font-style: italic; }
-
-  main { max-width: 860px; margin: 0 auto; padding: 24px 20px; }
-
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-
-  .card {
-    background: white;
-    border: 1px solid #e5c99a;
-    border-radius: 10px;
-    padding: 18px 20px;
-  }
-  .card h2 {
-    font-size: 14px;
-    font-weight: bold;
-    color: #92400e;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .stat-row { display: flex; gap: 10px; flex-wrap: wrap; }
-  .stat {
-    flex: 1;
-    min-width: 80px;
-    background: #fdf8f0;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-  }
-  .stat-val { font-size: 22px; font-weight: bold; color: #1e3a5f; }
-  .stat-lbl { font-size: 11px; color: #78350f; margin-top: 3px; }
-  .weather-desc { font-size: 12px; color: #78350f; margin-top: 10px; font-style: italic; }
-
-  .pollen-item { margin-bottom: 8px; }
-  .pollen-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
-  .pollen-name { color: #44403c; }
-  .pollen-level { font-weight: bold; }
-  .bar-track { height: 7px; background: #f0e6d3; border-radius: 4px; overflow: hidden; }
-  .bar-fill  { height: 100%; border-radius: 4px; transition: width 0.5s; }
-
-  .flow-box {
-    border-radius: 8px;
-    padding: 14px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  .flow-icon { font-size: 26px; line-height: 1; }
-  .flow-title { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
-  .flow-body  { font-size: 13px; line-height: 1.6; }
-
-  .tips-list { list-style: none; padding: 0; }
-  .tips-list li {
-    font-size: 13px;
-    padding: 7px 0;
-    border-bottom: 1px solid #f0e6d3;
-    line-height: 1.5;
-    display: flex;
-    gap: 8px;
-  }
-  .tips-list li:last-child { border-bottom: none; }
-  .tip-icon { flex-shrink: 0; }
-
-  .forecast-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .forecast-day {
-    flex: 1;
-    min-width: 60px;
-    background: #fdf8f0;
-    border-radius: 8px;
-    padding: 10px 6px;
-    text-align: center;
-    font-size: 12px;
-  }
-  .forecast-day .day-name { font-weight: bold; color: #78350f; margin-bottom: 4px; }
-  .forecast-day .day-temp { font-size: 16px; font-weight: bold; color: #1e3a5f; }
-  .forecast-day .day-low  { color: #78350f; font-size: 11px; }
-  .forecast-day .day-rain { color: #1e3a5f; font-size: 11px; margin-top: 3px; }
-
-  .loading { color: #a8856a; font-size: 13px; font-style: italic; }
-  .error   { color: #b91c1c; font-size: 13px; }
-
-  footer {
-    text-align: center;
-    padding: 24px;
-    font-size: 12px;
-    color: #a8856a;
-    border-top: 1px solid #e5c99a;
-    margin-top: 24px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>BeeAgent – Beekeeping Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #f6f4f0;
+      color: #222;
+    }
+    h1, h2 { margin-top: 0; }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    input[type="text"] {
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 200px;
+      margin-right: 0.5rem;
+    }
+    button {
+      padding: 0.45rem 0.9rem;
+      border-radius: 4px;
+      border: none;
+      background: #f4b400;
+      color: #222;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { background: #e0a000; }
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-family: inherit;
+    }
+    #aiAnswer {
+      white-space: pre-wrap;
+      margin-top: 0.5rem;
+      background: #faf7e8;
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #e0d6b8;
+      max-width: 700px;
+    }
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+    .forecast-day {
+      background: #fafafa;
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+    .pollen-bar {
+      height: 10px;
+      border-radius: 4px;
+      background: #eee;
+      overflow: hidden;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+    .pollen-fill { height: 100%; }
+    .pollen-low { background: #4caf50; }
+    .pollen-medium { background: #ff9800; }
+    .pollen-high { background: #f44336; }
+    .gauge {
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+  </style>
 </head>
+
 <body>
+  <h1>BeeAgent – Local Beekeeping Assistant</h1>
 
-<header>
-  <span style="font-size:32px">🐝</span>
-  <div>
-    <h1>BeeAgent</h1>
-    <p>Your beekeeping weather &amp; pollen dashboard</p>
-  </div>
-</header>
-
-<div class="location-bar">
-  <label>📍 Your location:</label>
-  <input type="text" id="loc-input" value="Stowmarket, Suffolk" placeholder="Town, County" />
-  <button onclick="loadAll()">Update</button>
-  <span id="loc-status"></span>
-</div>
-
-<main>
-  <div class="grid">
-
-    <!-- WEATHER CARD -->
-    <div class="card">
-      <h2>🌤 Current weather</h2>
-      <div id="weather-content">
-        <p class="loading">Loading weather data...</p>
-      </div>
-    </div>
-
-    <!-- POLLEN CARD -->
-    <div class="card">
-      <h2>🌸 Pollen levels</h2>
-      <div id="pollen-content">
-        <p class="loading">Loading pollen data...</p>
-      </div>
-    </div>
-
-    <!-- NECTAR FLOW CARD -->
-    <div class="card">
-      <h2>🍯 Nectar flow outlook</h2>
-      <div id="flow-content">
-        <p class="loading">Analysing conditions...</p>
-      </div>
-    </div>
-
-    <!-- SEASONAL TIPS CARD -->
-    <div class="card">
-      <h2>📋 Seasonal tips</h2>
-      <ul class="tips-list" id="tips-content">
-        <li><span class="tip-icon">⏳</span> Loading tips...</li>
-      </ul>
-    </div>
-
+  <div class="card">
+    <label>Location (UK town / postcode):</label>
+    <input id="location" type="text" value="Stowmarket">
+    <button onclick="updateAll()">Update</button>
+    <div id="statusText" style="font-size:0.85rem;color:#555;">Using default location: Stowmarket</div>
   </div>
 
-  <!-- FORECAST (full width) -->
-  <div class="card" style="margin-top: 16px;">
-    <h2>📅 4-day forecast</h2>
-    <div class="forecast-row" id="forecast-content">
-      <p class="loading">Loading forecast...</p>
-    </div>
+  <div class="card">
+    <h2>Current Weather</h2>
+    <div id="weatherSummary">Loading…</div>
   </div>
 
-</main>
+  <div class="card">
+    <h2>Pollen Levels</h2>
+    <div id="pollenSummary">Loading…</div>
+    <div id="pollenBars"></div>
+  </div>
 
-<footer>
-  BeeAgent Stage 1 &nbsp;·&nbsp; Weather &amp; pollen data from Open-Meteo (free, no key needed)
-  &nbsp;·&nbsp; Built for UK beekeepers
-</footer>
+  <div class="card">
+    <h2>Nectar Flow Outlook</h2>
+    <div id="nectarGauge" class="gauge">Loading…</div>
+    <div id="nectarOutlook">Calculating…</div>
+  </div>
+
+  <div class="card">
+    <h2>4‑Day Forecast</h2>
+    <div id="forecastGrid" class="forecast-grid"></div>
+  </div>
+
+  <div class="card">
+    <h2>Seasonal Tips</h2>
+    <div id="seasonalTips"></div>
+  </div>
+
+  <div class="card">
+    <h2>Current Forage Sources (East Anglia)</h2>
+    <div id="forageSources">Loading…</div>
+  </div>
+
+  <div class="card">
+    <h2>Ask the Bee Agent</h2>
+    <textarea id="question" rows="3" placeholder="Ask a beekeeping question…"></textarea>
+    <br><br>
+    <button onclick="askAI()">Ask</button>
+    <div id="aiAnswer"></div>
+  </div>
 
 <script>
-  // ── Coordinates (default: Stowmarket, Suffolk) ──────────────────────────────
-  let lat = 52.19;
-  let lon = 1.00;
+  window.latestWeather = null;
+  window.latestPollen = null;
 
-  // ── Kick everything off when the page loads ──────────────────────────────────
-  window.onload = function() {
-    loadAll();
+  const forageCalendar = {
+    1: [],
+    2: ["Hazel", "Alder", "Willow", "Gorse"],
+    3: ["Willow", "Dandelion", "Fruit blossom"],
+    4: ["Fruit blossom", "Oilseed rape (OSR)", "Dandelion"],
+    5: ["Oilseed rape (OSR)", "Hawthorn", "Horse chestnut"],
+    6: ["Bramble", "Clover", "Lime"],
+    7: ["Bramble", "Clover"],
+    8: ["Clover", "Himalayan balsam (where present)"],
+    9: ["Ivy"],
+    10: ["Ivy"],
+    11: [],
+    12: []
   };
 
-  // ── Main function: geocode location then fetch data ──────────────────────────
-  async function loadAll() {
-    const input   = document.getElementById('loc-input').value.trim();
-    const statusEl = document.getElementById('loc-status');
-
-    statusEl.textContent = 'Finding location...';
-
-    // Try to geocode the typed location using free OpenStreetMap service
-    const coords = await geocode(input);
-    if (coords) {
-      lat = coords.lat;
-      lon = coords.lon;
-      statusEl.textContent = '✓ ' + coords.displayName;
-    } else {
-      statusEl.textContent = 'Could not find location, using default';
-    }
-
-    // Fetch weather and pollen at the same time (faster)
-    const [weatherOk, pollenOk] = await Promise.all([
-      fetchWeather(),
-      fetchPollen()
-    ]);
-
-    // Seasonal tips don't need an API – just use current month
-    renderTips();
-  }
-
-  // ── Geocode a place name → lat/lon ──────────────────────────────────────────
-  async function geocode(placeName) {
-    try {
-      const url = 'https://nominatim.openstreetmap.org/search?q='
-                + encodeURIComponent(placeName)
-                + '&format=json&limit=1&countrycodes=gb';
-      const response = await fetch(url, {
-        headers: { 'Accept-Language': 'en' }
-      });
-      const data = await response.json();
-      if (data.length > 0) {
-        const parts = data[0].display_name.split(',');
-        return {
-          lat: parseFloat(data[0].lat),
-          lon: parseFloat(data[0].lon),
-          displayName: parts.slice(0, 2).join(',').trim()
-        };
-      }
-    } catch (e) {
-      console.error('Geocode error:', e);
-    }
-    return null;
-  }
-
-  // ── Fetch current weather + 4-day forecast ───────────────────────────────────
-  async function fetchWeather() {
-    const el = document.getElementById('weather-content');
-    const fc = document.getElementById('forecast-content');
-    el.innerHTML = '<p class="loading">Loading...</p>';
-
-    try {
-      const url = 'https://api.open-meteo.com/v1/forecast'
-        + '?latitude=' + lat
-        + '&longitude=' + lon
-        + '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code'
-        + '&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code'
-        + '&timezone=Europe%2FLondon'
-        + '&forecast_days=4';
-
-      const res  = await fetch(url);
-      const data = await res.json();
-      const c    = data.current;
-      const d    = data.daily;
-
-      // Current conditions
-      el.innerHTML = `
-        <div class="stat-row">
-          <div class="stat">
-            <div class="stat-val">${Math.round(c.temperature_2m)}°C</div>
-            <div class="stat-lbl">Temperature</div>
-          </div>
-          <div class="stat">
-            <div class="stat-val">${Math.round(c.wind_speed_10m)}</div>
-            <div class="stat-lbl">Wind km/h</div>
-          </div>
-          <div class="stat">
-            <div class="stat-val">${Math.round(c.relative_humidity_2m)}%</div>
-            <div class="stat-lbl">Humidity</div>
-          </div>
-          <div class="stat">
-            <div class="stat-val">${c.precipitation}</div>
-            <div class="stat-lbl">Rain mm</div>
-          </div>
-        </div>
-        <p class="weather-desc">${weatherDescription(c.weather_code)}</p>
-      `;
-
-      // 4-day forecast
-      const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      fc.innerHTML = d.time.map((dateStr, i) => {
-        const dayName = i === 0 ? 'Today' : dayNames[new Date(dateStr).getDay()];
-        return `
-          <div class="forecast-day">
-            <div class="day-name">${dayName}</div>
-            <div class="day-temp">${Math.round(d.temperature_2m_max[i])}°</div>
-            <div class="day-low">Low ${Math.round(d.temperature_2m_min[i])}°</div>
-            <div class="day-rain">💧 ${d.precipitation_sum[i].toFixed(1)}mm</div>
-          </div>
-        `;
-      }).join('');
-
-      // Store weather for flow analysis
-      window._weather = c;
-      updateFlowOutlook();
-      return true;
-
-    } catch (e) {
-      el.innerHTML = '<p class="error">Could not load weather. Check your internet connection.</p>';
-      fc.innerHTML = '<p class="error">Forecast unavailable.</p>';
-      return false;
-    }
-  }
-
-  // ── Fetch pollen levels ──────────────────────────────────────────────────────
-  async function fetchPollen() {
-    const el = document.getElementById('pollen-content');
-    el.innerHTML = '<p class="loading">Loading...</p>';
-
-    try {
-      const url = 'https://air-quality-api.open-meteo.com/v1/air-quality'
-        + '?latitude=' + lat
-        + '&longitude=' + lon
-        + '&current=grass_pollen,birch_pollen,alder_pollen,mugwort_pollen,ragweed_pollen';
-
-      const res  = await fetch(url);
-      const data = await res.json();
-      const p    = data.current;
-
-      const pollens = [
-        { name: 'Grass',   value: p.grass_pollen   || 0 },
-        { name: 'Birch',   value: p.birch_pollen   || 0 },
-        { name: 'Alder',   value: p.alder_pollen   || 0 },
-        { name: 'Mugwort', value: p.mugwort_pollen || 0 },
-        { name: 'Ragweed', value: p.ragweed_pollen || 0 },
-      ];
-
-      el.innerHTML = pollens.map(item => {
-        const { label, colour } = pollenLevel(item.value);
-        const barWidth = Math.min(100, item.value / 3);
-        return `
-          <div class="pollen-item">
-            <div class="pollen-header">
-              <span class="pollen-name">${item.name}</span>
-              <span class="pollen-level" style="color:${colour}">${label}</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width:${barWidth}%; background:${colour}"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // Store pollen for flow analysis
-      window._pollen = p;
-      updateFlowOutlook();
-      return true;
-
-    } catch (e) {
-      el.innerHTML = '<p class="error">Could not load pollen data.</p>';
-      return false;
-    }
-  }
-
-  // ── Nectar flow analysis (uses weather + pollen + month) ────────────────────
-  function updateFlowOutlook() {
-    if (!window._weather || !window._pollen) return; // wait for both
-
-    const el   = document.getElementById('flow-content');
-    const w    = window._weather;
-    const p    = window._pollen;
-    const month = new Date().getMonth() + 1; // 1–12
-
-    const flyable   = w.temperature_2m > 12 && w.wind_speed_10m < 25 && w.precipitation < 2;
-    const pollenSum = (p.grass_pollen || 0) + (p.birch_pollen || 0) + (p.alder_pollen || 0);
-
-    let icon, title, body, bg, titleColor;
-
-    if (month >= 4 && month <= 7 && pollenSum > 20 && flyable) {
-      icon  = '🍯';
-      title = 'Nectar flow — active';
-      body  = 'Pollen levels are good and temperatures are suitable. Bees should be foraging well. Make sure supers are on and there is room in the hive.';
-      bg    = '#f0fdf4'; titleColor = '#166534';
-    } else if (month >= 8 && month <= 9) {
-      icon  = '⚠️';
-      title = 'Late-summer dearth likely';
-      body  = 'August–September is typically a dearth period in the UK. Check stores carefully — colonies can starve quickly. Consider feeding 2:1 syrup if stores are low.';
-      bg    = '#fffbeb'; titleColor = '#92400e';
-    } else if (!flyable) {
-      icon  = '🌧';
-      title = 'Poor flying conditions';
-      body  = 'Bees are likely clustering inside. If poor weather lasts more than a few days, heft your hives to check stores are not running low.';
-      bg    = '#f8fafc'; titleColor = '#334155';
-    } else if (month >= 2 && month <= 3) {
-      icon  = '🌱';
-      title = 'Colony build-up phase';
-      body  = 'Early spring — the queen is ramping up laying. Check stores on a warm day (14°C+). This is the most dangerous time for starvation, so keep a close eye.';
-      bg    = '#eff6ff'; titleColor = '#1e3a5f';
-    } else if (month === 11 || month === 12 || month === 1) {
-      icon  = '❄️';
-      title = 'Winter cluster';
-      body  = 'Bees are in winter cluster. Do not open hives unless absolutely necessary. Heft gently to check weight — if light, fondant can be added via the crown board.';
-      bg    = '#f0f9ff'; titleColor = '#0369a1';
-    } else {
-      icon  = '🌼';
-      title = 'Moderate forage available';
-      body  = 'Conditions are reasonable. Bees should be foraging when dry and above 12°C. Keep up weekly inspections during swarm season (April–July) to check for queen cells.';
-      bg    = '#fdf8f0'; titleColor = '#92400e';
-    }
-
-    el.innerHTML = `
-      <div class="flow-box" style="background:${bg}">
-        <div class="flow-icon">${icon}</div>
-        <div>
-          <div class="flow-title" style="color:${titleColor}">${title}</div>
-          <div class="flow-body">${body}</div>
-        </div>
-      </div>
-    `;
-  }
-
-  // ── Seasonal tips (no API needed, just use the month) ───────────────────────
-  function renderTips() {
-    const el    = document.getElementById('tips-content');
+  function getCurrentForageSources() {
     const month = new Date().getMonth() + 1;
-
-    const allTips = {
-      1:  [ '❄️ Winter — do not open hives', '⚖️ Heft hives to check stores', '📋 Order equipment for the new season', '🐝 Watch for cleansing flights on mild days' ],
-      2:  [ '🌱 Colonies starting to build up', '🍬 Add fondant if stores feel light', '🔍 First inspection possible on warm days (14°C+)', '🗒️ Order new frames and foundation' ],
-      3:  [ '🔍 First full inspection of the year', '👑 Check queen is laying well', '🍎 Watch for early pollen from willows and fruit trees', '📦 Prepare supers ready for spring flow' ],
-      4:  [ '🐝 Swarm season begins — inspect weekly', '👑 Check for queen cells at every inspection', '📦 Add super if brood box is getting full', '🌸 Oil seed rape flow may start — act quickly' ],
-      5:  [ '🐝 Peak swarm season — inspect every 7 days', '🍯 Main nectar flow underway in many areas', '📦 Add supers ahead of demand', '✂️ Consider artificial swarm if queen cells found' ],
-      6:  [ '🍯 Good nectar flow continues', '📦 Keep adding supers — do not let bees run out of space', '🐝 Swarm risk still high early in month', '👑 Check for laying worker if colony seems queenless' ],
-      7:  [ '🍯 Flow slowing in most UK areas by late July', '🦟 Start thinking about Varroa treatment after harvest', '📋 Prepare to take honey — check cappings', '⚠️ Watch for robbing as flow ends' ],
-      8:  [ '⚠️ Dearth — reduce hive entrances to prevent robbing', '🍬 Feed 2:1 syrup to build winter stores', '🦟 Treat for Varroa now (Apivar or MAQS)', '🍯 Extract and store honey promptly' ],
-      9:  [ '🍬 Continue feeding to build winter stores', '🦟 Complete Varroa treatment', '🐝 Unite any weak colonies before winter', '📋 Ensure all hives have a mated laying queen' ],
-      10: [ '📦 Remove empty supers and store them', '🐝 Colonies contracting — last inspections of year', '🍬 Top up stores if needed', '🐭 Fit mouse guards now' ],
-      11: [ '❄️ Hives should be closed up for winter', '🐭 Check mouse guards are in place', '⚖️ Monthly heft to monitor stores', '📋 Service and clean equipment over winter' ],
-      12: [ '❄️ Winter — leave bees alone unless essential', '⚖️ Heft gently to check stores', '📋 Plan next season — order queens, equipment', '📚 Good time to read and study beekeeping' ],
-    };
-
-    const tips = allTips[month] || allTips[5];
-    el.innerHTML = tips.map(t => `<li><span class="tip-icon">${t.slice(0,2)}</span>${t.slice(2).trim()}</li>`).join('');
+    return forageCalendar[month] || [];
   }
 
-  // ── Helper: weather code → description ──────────────────────────────────────
-  function weatherDescription(code) {
-    if (code === 0)              return 'Clear sky';
-    if (code <= 2)               return 'Partly cloudy';
-    if (code === 3)              return 'Overcast';
-    if (code >= 45 && code <= 48) return 'Foggy';
-    if (code >= 51 && code <= 67) return 'Drizzle or rain';
-    if (code >= 71 && code <= 77) return 'Snow';
-    if (code >= 80 && code <= 82) return 'Rain showers';
-    if (code >= 85 && code <= 86) return 'Snow showers';
-    if (code >= 95)              return 'Thunderstorms';
-    return 'Mixed conditions';
+  async function geocodeLocation(name) {
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.results || data.results.length === 0) throw new Error("Location not found");
+    return data.results[0];
   }
 
-  // ── Helper: pollen value → label + colour ────────────────────────────────────
-  function pollenLevel(value) {
-    if (value < 10)  return { label: 'Low',       colour: '#16a34a' };
-    if (value < 50)  return { label: 'Moderate',  colour: '#ca8a04' };
-    if (value < 200) return { label: 'High',      colour: '#ea580c' };
-    return               { label: 'Very high', colour: '#dc2626' };
+  async function fetchWeather(lat, lon) {
+    const url =
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation" +
+      "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum" +
+      "&timezone=auto";
+    return fetch(url).then(r => r.json());
   }
+
+  async function fetchPollen(lat, lon) {
+    const url =
+      `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
+      "&hourly=alder_pollen,birch_pollen,grass_pollen,ragweed_pollen,olive_pollen" +
+      "&timezone=auto";
+    return fetch(url).then(r => r.json());
+  }
+
+  function pollenLevel(v) {
+    if (v < 20) return { label: "low", class: "pollen-low", width: 25 };
+    if (v < 80) return { label: "medium", class: "pollen-medium", width: 60 };
+    return { label: "high", class: "pollen-high", width: 90 };
+  }
+
+  function renderWeather(data, name) {
+    const c = data.current;
+    document.getElementById("weatherSummary").innerHTML = `
+      <strong>${name}</strong><br>
+      Temperature: ${c.temperature_2m} °C<br>
+      Humidity: ${c.relative_humidity_2m} %<br>
+      Wind: ${c.wind_speed_10m} km/h<br>
+      Rain: ${c.precipitation} mm
+    `;
+
+    const d = data.daily;
+    const grid = document.getElementById("forecastGrid");
+    grid.innerHTML = "";
+    for (let i = 0; i < 4; i++) {
+      const div = document.createElement("div");
+      div.className = "forecast-day";
+      div.innerHTML = `
+        <strong>${d.time[i]}</strong><br>
+        Max: ${d.temperature_2m_max[i]} °C<br>
+        Min: ${d.temperature_2m_min[i]} °C<br>
+        Rain: ${d.precipitation_sum[i]} mm
+      `;
+      grid.appendChild(div);
+    }
+  }
+
+  function renderPollen(data) {
+    const h = data.hourly;
+    const i = h.time.length - 1;
+
+    const alder = h.alder_pollen?.[i] ?? 0;
+
+    const values = { Alder: alder };
+
+    const lvl = pollenLevel(alder);
+    document.getElementById("pollenSummary").innerHTML =
+      `Bee‑relevant pollen (alder): <strong>${lvl.label}</strong>`;
+
+    const bars = document.getElementById("pollenBars");
+    bars.innerHTML = "";
+
+    for (const [name, value] of Object.entries(values)) {
+      const l = pollenLevel(value);
+      bars.innerHTML += `
+        <div><strong>${name}</strong> – ${l.label} (${value ? value.toFixed(1) : "n/a"})</div>
+        <div class="pollen-bar">
+          <div class="pollen-fill ${l.class}" style="width:${l.width}%"></div>
+        </div>
+      `;
+    }
+  }
+
+  function renderNectarOutlook(weather, pollen) {
+    const temp = weather.current.temperature_2m;
+    const wind = weather.current.wind_speed_10m;
+    const rain = weather.current.precipitation;
+
+    const h = pollen.hourly;
+    const i = h.time.length - 1;
+    const alder = h.alder_pollen?.[i] ?? 0;
+
+    const month = new Date().getMonth() + 1;
+    const sources = getCurrentForageSources();
+
+    let gauge = "🟡 Patchy flow";
+    let msg = "";
+
+    const goodWeather = temp >= 16 && temp <= 28 && wind < 20 && rain < 1;
+    const poorWeather = temp < 12 || rain > 3;
+
+    if (sources.length === 0) {
+      gauge = "🔴 Dearth";
+      msg = "Very limited forage in bloom. Bees rely mainly on stored honey.";
+    } else if (goodWeather) {
+      gauge = "🟢 Strong flow";
+      msg =
+        "Major nectar sources are in bloom and weather supports foraging. Expect good nectar intake.";
+    } else if (poorWeather) {
+      gauge = "🔴 Dearth / suppressed flow";
+      msg =
+        "Forage is present but cool or wet conditions will suppress flying.";
+    } else {
+      gauge = "🟡 Patchy flow";
+      msg =
+        "Some forage is available and bees will fly in windows of good weather.";
+    }
+
+    if (month <= 3 && alder > 20) {
+      msg += " Early‑season alder pollen suggests brood rearing is underway.";
+    }
+
+    document.getElementById("nectarGauge").textContent = gauge;
+    document.getElementById("nectarOutlook").textContent = msg;
+  }
+
+  function renderSeasonalTips() {
+    const m = new Date().getMonth() + 1;
+    let t = "";
+    if (m <= 2) t = "Late winter: minimal disturbance, check stores and heft hives.";
+    else if (m <= 4) t = "Early spring: first inspections on warm days; prepare for swarm control.";
+    else if (m <= 6) t = "Peak season: swarm control, add supers, monitor space.";
+    else if (m <= 8) t = "Late summer: harvest, varroa treatment, assess colony strength.";
+    else if (m <= 10) t = "Autumn: ensure winter stores and complete treatments.";
+    else t = "Winter: avoid opening hives; monitor weight.";
+    document.getElementById("seasonalTips").textContent = t;
+  }
+
+  function renderForageSources() {
+    const sources = getCurrentForageSources();
+    const div = document.getElementById("forageSources");
+
+    if (!sources.length) {
+      div.textContent = "Very limited natural forage – bees rely mostly on stored honey.";
+      return;
+    }
+
+    const list = sources.map(s => "• " + s).join("<br>");
+    div.innerHTML = `
+      <strong>Currently flowering (typical East Anglia):</strong><br>
+      ${list}
+    `;
+
+    if (window.latestWeather) {
+      const temp = window.latestWeather.current.temperature_2m;
+      const wind = window.latestWeather.current.wind_speed_10m;
+      const rain = window.latestWeather.current.precipitation;
+
+      let note = "";
+      if (temp >= 16 && temp <= 28 && wind < 20 && rain < 1) {
+        note = "Conditions are good for bees to work these sources.";
+      } else if (temp < 12 || rain > 3) {
+        note = "Bloom is present but cool or wet weather will limit foraging.";
+      } else {
+        note = "Bees will work these sources in better parts of the day.";
+      }
+
+      div.innerHTML += `<br><br><em>${note}</em>`;
+    }
+  }
+
+  async function updateAll() {
+    const loc = document.getElementById("location").value.trim() || "Stowmarket";
+    document.getElementById("statusText").textContent = "Looking up location…";
+
+    try {
+      const geo = await geocodeLocation(loc);
+      document.getElementById("statusText").textContent =
+        `Location: ${geo.name}, ${geo.country}`;
+
+      const [weather, pollen] = await Promise.all([
+        fetchWeather(geo.latitude, geo.longitude),
+        fetchPollen(geo.latitude, geo.longitude)
+      ]);
+
+      window.latestWeather = weather;
+      window.latestPollen = pollen;
+
+      renderWeather(weather, geo.name);
+      renderPollen(pollen);
+      renderNectarOutlook(weather, pollen);
+      renderSeasonalTips();
+      renderForageSources();
+    } catch (err) {
+      console.error(err);
+      document.getElementById("statusText").textContent =
+        "Error loading location or data.";
+    }
+  }
+
+  async function askAI() {
+    const q = document.getElementById("question").value.trim();
+    if (!q) {
+      document.getElementById("aiAnswer").textContent =
+        "Please type a question.";
+      return;
+    }
+
+    if (!window.latestWeather || !window.latestPollen) {
+      document.getElementById("aiAnswer").textContent =
+        "Weather/pollen not loaded. Click Update first.";
+      return;
+    }
+
+    document.getElementById("aiAnswer").textContent = "Thinking…";
+
+    try {
+      const res = await fetch("http://localhost:3000/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: q,
+          weather: window.latestWeather,
+          pollen: window.latestPollen,
+          forageCalendar
+        })
+      });
+
+      const data = await res.json();
+      document.getElementById("aiAnswer").textContent =
+        data.answer || "No answer received.";
+    } catch (err) {
+      document.getElementById("aiAnswer").textContent =
+        "Could not reach backend. Is server.js running?";
+    }
+  }
+
+  updateAll();
 </script>
 
 </body>
